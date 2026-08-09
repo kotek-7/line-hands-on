@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realtime Pong</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="stage">
+      <header class="scoreboard">
+        <span id="score-left" class="score">0</span>
+        <span class="score-sep">-</span>
+        <span id="score-right" class="score">0</span>
+      </header>
+
+      <div class="canvas-wrap">
+        <canvas id="game" width="800" height="480"></canvas>
+        <div id="overlay" class="overlay">接続中…</div>
+      </div>
+
+      <p class="hint">マウスまたは <kbd>↑</kbd> <kbd>↓</kbd> でパドルを動かす</p>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
