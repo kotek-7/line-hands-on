@@ -1,0 +1,73 @@
+const feed = document.querySelector("#feed");
+const form = document.querySelector("#message-form");
+const userNameInput = document.querySelector("#user-name");
+const messageInput = document.querySelector("#message-input");
+const emptyState = document.querySelector("#empty-state");
+
+const { url: supabaseUrl, key: supabaseKey } = window.SUPABASE_CONFIG;
+const supabase =
+  supabaseUrl.startsWith("__") || supabaseKey.startsWith("__")
+    ? null
+    : window.supabase.createClient(supabaseUrl, supabaseKey);
+
+const messages = [
+  { user_name: "Taro", body: "こんにちは！" },
+  { user_name: "Hanako", body: "やっほー" },
+  { user_name: "Doer", body: "LINEを作ろう" },
+];
+
+function appendMessage(message) {
+  emptyState?.setAttribute("hidden", "");
+
+  const row = document.createElement("article");
+  row.className = "message-row";
+  if (message.user_name === userNameInput.value) {
+    row.classList.add("is-own");
+  }
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = message.user_name?.trim().slice(0, 1).toUpperCase() || "?";
+
+  const content = document.createElement("div");
+  content.className = "message-content";
+
+  const meta = document.createElement("div");
+  meta.className = "message-meta";
+
+  const name = document.createElement("span");
+  name.className = "message-name";
+  name.textContent = message.user_name || "Unknown";
+
+  const time = document.createElement("time");
+  time.className = "message-time";
+  time.textContent = formatTime(message.created_at);
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = message.body;
+
+  meta.append(name, time);
+  content.append(meta, bubble);
+  row.append(avatar, content);
+  feed.append(row);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function formatTime(createdAt) {
+  const date = createdAt ? new Date(createdAt) : new Date();
+
+  return new Intl.DateTimeFormat("ja-JP", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+// TODO 1: messagesに入っているメッセージを全部表示しよう
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  // TODO 2: 入力欄からmessageオブジェクトを作ろう
+  // TODO 3: messageを画面へ追加しよう
+});
