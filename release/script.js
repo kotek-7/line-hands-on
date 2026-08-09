@@ -65,24 +65,62 @@ function formatTime(createdAt) {
     minute: "2-digit",
   }).format(date);
 }
-const messages = [
-  { user_name: "Taro", body: "こんにちは！" },
-  { user_name: "Hanako", body: "やっほー" },
-  { user_name: "Doer", body: "LINEを作ろう" }
-];
 
-// TODO 1: messagesに入っているメッセージを全部表示しよう
-messages.forEach((message) => {
-  appendMessage(message);
-});
+async function loadMessages() {
+  const { data, error } = await supabase
+    .from("messages")
+    .select()
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  renderedMessageIds.clear();
+  feed.querySelectorAll(".message-row").forEach((row) => row.remove());
+  data.forEach((message) => appendMessage(message));
+}
+
+await loadMessages();
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const message = {
     user_name: userName,
-    body: messageInput.value
+    body: messageInput.value.trim(),
   };
 
-  appendMessage(message);
+  if (!message.body) return;
+
+  const { data, error } = await supabase
+    .from("messages")
+    .insert(message)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  appendMessage(data);
+  messageInput.value = "";
+  messageInput.focus();
 });
+
+supabase
+  .channel("messages")
+  .on(
+    "postgres_changes",
+    {
+      event: "INSERT",
+      schema: "public",
+      table: "messages",
+    },
+    (payload) => {
+      appendMessage(payload.new);
+    },
+  )
+  .subscribe();
