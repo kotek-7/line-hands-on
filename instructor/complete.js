@@ -1,10 +1,11 @@
 const feed = document.querySelector("#feed");
 const form = document.querySelector("#message-form");
-const userNameInput = document.querySelector("#user-name");
 const messageInput = document.querySelector("#message-input");
 const emptyState = document.querySelector("#empty-state");
+const renderedMessageIds = new Set();
 
 const { url: supabaseUrl, key: supabaseKey } = window.SUPABASE_CONFIG;
+const userName = window.SUPABASE_CONFIG.userName?.trim() || "Doer";
 
 if (
   supabaseUrl.startsWith("__") ||
@@ -16,10 +17,16 @@ if (
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 function appendMessage(message) {
+  if (message.id && renderedMessageIds.has(message.id)) return;
+  if (message.id) renderedMessageIds.add(message.id);
+
   emptyState?.setAttribute("hidden", "");
 
   const row = document.createElement("article");
   row.className = "message-row";
+  if (message.user_name?.trim() === userName) {
+    row.classList.add("is-own");
+  }
 
   const avatar = document.createElement("div");
   avatar.className = "avatar";
@@ -80,19 +87,24 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const message = {
-    user_name: userNameInput.value.trim(),
+    user_name: userName,
     body: messageInput.value.trim(),
   };
 
   if (!message.user_name || !message.body) return;
 
-  const { error } = await supabase.from("messages").insert(message);
+  const { data, error } = await supabase
+    .from("messages")
+    .insert(message)
+    .select()
+    .single();
 
   if (error) {
     console.error(error);
     return;
   }
 
+  appendMessage(data);
   messageInput.value = "";
   messageInput.focus();
 });

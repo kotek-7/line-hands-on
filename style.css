@@ -189,87 +189,97 @@ button {
 
 .message-row {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: 50px minmax(0, 1fr);
+  gap: 12px;
   align-items: start;
-  margin-bottom: 17px;
+  margin-bottom: 19px;
   animation: message-in 160ms ease-out;
 }
 
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 50px;
+  height: 50px;
   display: grid;
   place-items: center;
-  margin-top: 0;
+  margin-top: 10px;
   overflow: hidden;
   color: #ffffff;
-  background:
-    linear-gradient(135deg, transparent 44%, rgb(255 255 255 / 86%) 45% 49%, transparent 50%),
-    radial-gradient(circle at 78% 32%, #f3f3f3 0 11%, transparent 12%),
-    linear-gradient(140deg, #553018, #89512a 48%, #d9bd83 49% 58%, #25170d 59%);
+  background: #7f96b5;
   border-radius: 50%;
-  font-size: 0;
+  font-size: 20px;
+  font-weight: 800;
   box-shadow: 0 1px 2px rgb(24 39 58 / 20%);
 }
 
 .message-content {
   min-width: 0;
-  display: flex;
-  align-items: flex-end;
-  gap: 7px;
+  display: grid;
+  grid-template-columns: minmax(0, auto) auto;
+  grid-template-areas:
+    "name name"
+    "bubble time";
+  align-items: end;
+  justify-content: start;
+  column-gap: 10px;
+  row-gap: 4px;
 }
 
 .message-meta {
-  display: flex;
-  align-items: flex-end;
-  gap: 7px;
-  min-height: 0;
-  margin: 0;
-  order: 2;
+  display: contents;
 }
 
 .message-name {
-  display: none;
+  grid-area: name;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  color: #566b87;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .message-time {
+  grid-area: time;
   align-self: flex-end;
-  margin: 0 0 3px;
+  margin: 0 0 8px;
   color: #4f6382;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .bubble {
   position: relative;
-  order: 1;
+  grid-area: bubble;
   width: fit-content;
-  max-width: min(100%, 318px);
-  padding: 9px 14px 10px;
+  max-width: min(100%, 578px);
+  padding: 13px 22px 14px;
   overflow-wrap: anywhere;
   background: #ffffff;
-  border-radius: 18px;
+  border-radius: 0 25px 25px 25px;
   box-shadow: none;
-  font-size: 18px;
-  line-height: 1.35;
+  font-size: 22px;
+  line-height: 1.38;
 }
 
 .bubble::before {
   content: "";
   position: absolute;
-  top: 10px;
-  left: -5px;
-  width: 12px;
-  height: 13px;
+  top: 0;
+  left: -9px;
+  width: 18px;
+  height: 18px;
   background: #ffffff;
-  clip-path: polygon(100% 0, 0 42%, 100% 100%);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
 }
 
 .message-row.is-own {
   grid-template-columns: minmax(0, 1fr);
   justify-items: end;
-  margin-left: 48px;
+  margin-left: 78px;
 }
 
 .message-row.is-own .avatar {
@@ -277,42 +287,41 @@ button {
 }
 
 .message-row.is-own .message-content {
+  grid-template-columns: auto minmax(0, auto);
+  grid-template-areas: "time bubble";
   justify-content: flex-end;
+  column-gap: 9px;
 }
 
-.message-row.is-own .message-meta {
-  order: 1;
+.message-row.is-own .message-name {
+  display: none;
 }
 
 .message-row.is-own .bubble {
-  order: 2;
   background: #a8ee89;
-  border-radius: 18px;
+  border-radius: 25px 0 25px 25px;
 }
 
 .message-row.is-own .bubble::before {
-  right: -5px;
+  right: -9px;
   left: auto;
+  width: 18px;
+  height: 18px;
   background: #a8ee89;
-  clip-path: polygon(0 0, 100% 42%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
 }
 
 .message-row.is-own .message-time {
-  margin-right: 2px;
+  margin: 0 0 8px;
   text-align: right;
-  white-space: nowrap;
 }
 
 .composer {
   position: relative;
   z-index: 5;
-  padding: 10px 10px 12px;
+  padding: 8px 10px 12px;
   background: #ffffff;
   border-top: 1px solid #dfe4ea;
-}
-
-.name-field {
-  display: none;
 }
 
 .message-field {

@@ -1,27 +1,30 @@
 const feed = document.querySelector("#feed");
 const form = document.querySelector("#message-form");
-const userNameInput = document.querySelector("#user-name");
 const messageInput = document.querySelector("#message-input");
 const emptyState = document.querySelector("#empty-state");
+const renderedMessageIds = new Set();
 
 const { url: supabaseUrl, key: supabaseKey } = window.SUPABASE_CONFIG;
-const supabase =
-  supabaseUrl.startsWith("__") || supabaseKey.startsWith("__")
-    ? null
-    : window.supabase.createClient(supabaseUrl, supabaseKey);
+const userName = window.SUPABASE_CONFIG.userName?.trim() || "Doer";
 
-const messages = [
-  { user_name: "Taro", body: "こんにちは！" },
-  { user_name: "Hanako", body: "やっほー" },
-  { user_name: "Doer", body: "LINEを作ろう" },
-];
+if (
+  supabaseUrl.startsWith("__") ||
+  supabaseKey.startsWith("__")
+) {
+  throw new Error("config.js にSupabaseのURLとキーを設定してください");
+}
+
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 function appendMessage(message) {
+  if (message.id && renderedMessageIds.has(message.id)) return;
+  if (message.id) renderedMessageIds.add(message.id);
+
   emptyState?.setAttribute("hidden", "");
 
   const row = document.createElement("article");
   row.className = "message-row";
-  if (message.user_name === userNameInput.value) {
+  if (message.user_name?.trim() === userName) {
     row.classList.add("is-own");
   }
 
@@ -65,7 +68,7 @@ function formatTime(createdAt) {
 
 // TODO 1: messagesに入っているメッセージを全部表示しよう
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   // TODO 2: 入力欄からmessageオブジェクトを作ろう
