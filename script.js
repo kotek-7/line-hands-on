@@ -65,24 +65,12 @@ function formatTime(createdAt) {
     minute: "2-digit",
   }).format(date);
 }
-const messages = [
-  { user_name: "Taro", body: "こんにちは！" },
-  { user_name: "Hanako", body: "やっほー" },
-  { user_name: "Doer", body: "LINEを作ろう" }
-];
 
 // TODO 1: messagesに入っているメッセージを全部表示しよう
-messages.forEach((message) => {
-  appendMessage(message);
-});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const message = {
-    user_name: userName,
-    body: messageInput.value
-  };
-
-  appendMessage(message);
+  // TODO 2: 入力欄からmessageオブジェクトを作ろう
+  // TODO 3: messageを画面へ追加しよう
 });
